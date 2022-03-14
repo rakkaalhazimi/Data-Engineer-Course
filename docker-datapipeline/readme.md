@@ -30,7 +30,7 @@ docker run -it --rm \
     -e POSTGRES_PASSWORD="root" \
     -e POSTGRES_DB="ny_taxi" \
     -v d:/Python/Projects/DataEngineering/docker-datapipeline/ny_taxi_postgres_data:/var/lib/postgresql/data \
-    -p 5433:5432 \
+    -p 5432:5432 \
     --network=pg-network \
     --name pg-database \
     postgres:13
@@ -40,8 +40,10 @@ docker run -it --rm \
 <br/>
 
 # Connect to your postgres server
+Connect to the postgres on localhost, the port number 5432 might not working, change to 5433
+when using docker container without docker network
 ```
-psql -h localhost -p 5433 -U root -d ny_taxi
+psql -h localhost -p 5432 -U root -d ny_taxi
 ```
 
 <br/>
@@ -58,3 +60,35 @@ docker run -it --rm \
 ```
 
 <br>
+
+# Build docker image for ingest data
+Build your data pipeline image using Dockerfile
+```
+docker build -t taxi_ingest:v001 .
+```
+<br>
+
+# Run local server through python http module
+In order for your docker container to get the csv file quickly, use local server
+rather than internet
+```
+python -m http.server
+```
+
+<br>
+
+# Ingest data with python from docker container
+After everything is set, you can start ingesting your csv data into postgres
+```
+docker run -it --rm  \
+    --name ingest_csv  \
+    --network=pg-network  \
+    taxi_ingest:v001  \
+    --user=root  \
+    --password=root  \
+    --host=pg-database  \
+    --port=5432  \
+    --db=ny_taxi  \
+    --table_name=yellow_taxi_data  \
+    --url=http://172.28.224.1:8000/yellow_tripdata_2021-01.csv  \
+```
