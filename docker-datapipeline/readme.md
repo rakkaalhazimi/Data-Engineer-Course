@@ -29,7 +29,7 @@ docker run -it --rm \
     -e POSTGRES_USER="root" \
     -e POSTGRES_PASSWORD="root" \
     -e POSTGRES_DB="ny_taxi" \
-    -v d:/Python/Projects/DataEngineering/docker-datapipeline/ny_taxi_postgres_data:/var/lib/postgresql/data \
+    -v d:/Programming/Python/Projects/DataEngineering/docker-datapipeline/ny_taxi_postgres_data:/var/lib/postgresql/data \
     -p 5432:5432 \
     --network=pg-network \
     --name pg-database \
@@ -78,7 +78,8 @@ python -m http.server
 <br>
 
 # Ingest data with python from docker container
-After everything is set, you can start ingesting your csv data into postgres
+After everything is set, you can start ingesting your csv data into postgres.
+Use your ipv4 address as url base.
 ```
 docker run -it --rm  \
     --name ingest_csv  \
@@ -90,5 +91,24 @@ docker run -it --rm  \
     --port=5432  \
     --db=ny_taxi  \
     --table_name=yellow_taxi_data  \
-    --url=http://172.28.224.1:8000/yellow_tripdata_2021-01.csv  \
+    --url=http://172.20.208.1:8000/yellow_tripdata_2021-01.csv  \
+```
+
+<br>
+
+# Run with Docker Compose
+Wrap above docker command inside docker-compose file, see docker-compose.yaml, then run:
+```
+docker-compose up
+```
+
+Navigate to your pgadmin again. After that press `ctrl+c` on the terminal and type:
+```
+docker-compose down
+```
+to shut them down.
+
+You can run on the detached mode with
+```
+docker-compose up -d
 ```
