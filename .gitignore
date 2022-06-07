@@ -1,3 +1,5 @@
-yellow_tripdata_2021-01.csv
+*.csv
+*.parquet
+*.orc
 __pycache__/
 ny_taxi_postgres_data/
